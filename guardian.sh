@@ -12,7 +12,7 @@ MAX_RAM_MB=500
 WARN_RAM_MB=400
 CRIT_RAM_MB=480
 LOG_FILE="/var/log/nexus-guardian.log"
-TARGET_CONTAINERS="nexus-deepseek nexus-gemini nexus-antigravity nexus-minimax nexus-codex cloudflared-deepseek"
+TARGET_CONTAINERS="nexus-deepseek nexus-antigravity nexus-codex cloudflared-deepseek"
 
 # =============================================================================
 # Logging
@@ -58,7 +58,7 @@ clean_sessions() {
     fi
 
     # Gemini, Antigravity, Codex: matar procesos extras
-    for container in nexus-gemini nexus-antigravity nexus-codex; do
+    for container in nexus-antigravity nexus-codex; do
         if docker ps --format '{{.Names}}' 2>/dev/null | grep -q "$container"; then
             pids=$(docker exec "$container" sh -c "ps | grep -E 'bash|sh' | grep -v grep | grep -v ttyd | awk '{print \$1}' | head -5" 2>/dev/null || true)
             for pid in $pids; do
@@ -83,7 +83,7 @@ restart_lights() {
         sleep 3
     fi
 
-    for container in nexus-deepseek nexus-gemini nexus-antigravity nexus-codex; do
+    for container in nexus-deepseek nexus-antigravity nexus-codex; do
         if docker ps --format '{{.Names}}' 2>/dev/null | grep -q "$container"; then
             docker exec "$container" sh -c 'sync 2>/dev/null; true' 2>/dev/null || true
         fi
@@ -151,7 +151,7 @@ log "RAM post-limpieza: ${FINAL_RAM} MB"
 
 if [ "$FINAL_RAM" -ge "$MAX_RAM_MB" ]; then
     log "!! No se pudo reducir bajo ${MAX_RAM_MB} MB. Forzando reinicio total..."
-    docker restart nexus-gemini nexus-deepseek nexus-antigravity nexus-codex >/dev/null 2>&1 || true
+    docker restart nexus-deepseek nexus-antigravity nexus-codex >/dev/null 2>&1 || true
     sleep 5
     EMERGENCY_RAM=$(get_total_ram)
     log "RAM post-emergencia: ${EMERGENCY_RAM} MB"

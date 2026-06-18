@@ -23,7 +23,7 @@ def get_stats():
     ).stdout.strip()
 
     containers = []
-    agent_names = {"nexus-deepseek","nexus-gemini","nexus-antigravity","nexus-minimax","nexus-codex","cloudflared-deepseek","nexus-guardian"}
+    agent_names = {"nexus-deepseek","nexus-antigravity","nexus-codex","cloudflared-deepseek","nexus-guardian"}
     for line in containers_raw.split('\n'):
         try:
             c = json.loads(line)
