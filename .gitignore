@@ -1,0 +1,11 @@
+# Credenciales — NO SUBIR a GitHub
+.env
+tunnels/*.json
+
+# Docker
+*.log
+*.pid
+
+# OS
+.DS_Store
+Thumbs.db
