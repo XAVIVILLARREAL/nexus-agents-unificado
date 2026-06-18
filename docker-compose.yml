@@ -370,6 +370,19 @@ services:
     restart: unless-stopped
 
   # -------------------------------------------------------------------
+  # Nexus Monitor — API HTTP de recursos del servidor en tiempo real
+  # -------------------------------------------------------------------
+  monitor:
+    image: nexus-monitor:v1
+    container_name: nexus-monitor
+    network_mode: host
+    mem_limit: 50m
+    mem_reservation: 25m
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+
+  # -------------------------------------------------------------------
   # Nexus Guardian — Monitor de RAM y limpieza automática
   # -------------------------------------------------------------------
   guardian:
