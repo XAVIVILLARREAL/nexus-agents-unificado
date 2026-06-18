@@ -16,6 +16,50 @@
 services:
 
   # -------------------------------------------------------------------
+  # OpenCode CLI — via ttyd
+  # URL: https://opencode.xtremediagnostics.com
+  # -------------------------------------------------------------------
+  opencode:
+    image: nexus-opencode:v1
+    container_name: nexus-opencode
+    network_mode: host
+    mem_limit: 150m
+    mem_reservation: 80m
+    environment:
+      - LANG=C.utf8
+      - LC_ALL=C.utf8
+      - TERM=xterm-256color
+      - TZ=${TZ:-America/Monterrey}
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        set -e
+        mkdir -p /root/.cloudflared
+        printf '%s' '{"AccountTag":"c00f175ffd87599332aa9695fe52717f","TunnelID":"b451c23e-7cd3-447b-9541-b82e1ed73cc5","TunnelSecret":"mFdxJRDxdwaE2TCCVb52exx55MiIXgCm/KPDgROJEV4rgjQIw53xs6wkXnf+o+iBqvpXz/6VEZPEJuOHiycqAQ=="}' > /root/.cloudflared/b451c23e-7cd3-447b-9541-b82e1ed73cc5.json
+        chmod 600 /root/.cloudflared/b451c23e-7cd3-447b-9541-b82e1ed73cc5.json
+        cat > /root/.cloudflared/config.yml << CFEOF
+        tunnel: b451c23e-7cd3-447b-9541-b82e1ed73cc5
+        credentials-file: /root/.cloudflared/b451c23e-7cd3-447b-9541-b82e1ed73cc5.json
+        ingress:
+          - hostname: opencode.xtremediagnostics.com
+            service: http://localhost:7686
+          - service: http_status:404
+        CFEOF
+        cloudflared tunnel --config /root/.cloudflared/config.yml run > /tmp/cf.log 2>&1 &
+        exec ttyd --writable --index /ttyd-mobile.html \
+          -t fontSize=22 \
+          -t "fontFamily=Liberation Mono, Consolas, monospace" \
+          -t cursorBlink=true \
+          -t cursorStyle=block \
+          -t screenReaderMode=true \
+          --ping-interval 30 --max-clients 10 \
+          --port 7686 opencode
+    volumes:
+      - opencode-config:/root/.opencode
+      - ${WORKSPACE_PATH:-/config/ERP-DOCKER-STACK}:/workspace:rw
+    restart: unless-stopped
+
+  # -------------------------------------------------------------------
   # Codex CLI — via ttyd
   # URL: https://codex.xtremediagnostics.com
   # -------------------------------------------------------------------
@@ -153,5 +197,6 @@ volumes:
   ollama-models:
   antigravity-config:
   codex-config:
+  opencode-config:
   guardian-logs:
   commits-data:

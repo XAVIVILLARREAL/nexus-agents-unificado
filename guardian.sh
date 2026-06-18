@@ -12,7 +12,7 @@ MAX_RAM_MB=500
 WARN_RAM_MB=400
 CRIT_RAM_MB=480
 LOG_FILE="/var/log/nexus-guardian.log"
-TARGET_CONTAINERS="nexus-deepseek nexus-antigravity nexus-codex cloudflared-deepseek"
+TARGET_CONTAINERS="nexus-deepseek nexus-antigravity nexus-codex nexus-opencode cloudflared-deepseek"
 
 # =============================================================================
 # Logging

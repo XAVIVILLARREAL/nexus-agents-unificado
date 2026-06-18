@@ -1,0 +1,7 @@
+FROM node:20-alpine
+
+RUN npm install -g opencode-ai@latest ttyd
+
+RUN wget -qO /usr/local/bin/cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 && chmod +x /usr/local/bin/cloudflared
+
+EXPOSE 7686
