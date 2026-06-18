@@ -9,8 +9,8 @@
 #   - Codex CLI                 (puerto 7685)
 #
 # Workspace compartido: ${WORKSPACE_PATH:-/workspace}
-# Los túneles Cloudflare se levantan automáticamente dentro de cada contenedor
-# usando las credenciales en ./tunnels/*.json
+# Límite RAM total: ~500 MB entre todos los agentes
+# Guardian: monitorea y limpia sesiones viejas automáticamente
 # =============================================================================
 
 services:
@@ -23,6 +23,8 @@ services:
     image: nexus-deepseek:v6
     container_name: nexus-deepseek
     network_mode: host
+    mem_limit: 150m
+    mem_reservation: 80m
     environment:
       - LANG=C.utf8
       - LC_ALL=C.utf8
@@ -93,6 +95,8 @@ services:
     image: cf-deepseek:v3
     container_name: cloudflared-deepseek
     network_mode: host
+    mem_limit: 50m
+    mem_reservation: 25m
     command: cloudflared tunnel --no-autoupdate run
     restart: unless-stopped
     depends_on:
@@ -106,6 +110,8 @@ services:
     image: nexus-gemini:v1
     container_name: nexus-gemini
     network_mode: host
+    mem_limit: 150m
+    mem_reservation: 80m
     environment:
       - LANG=C.utf8
       - LC_ALL=C.utf8
@@ -175,6 +181,8 @@ services:
     image: nexus-antigravity:v1
     container_name: nexus-antigravity
     network_mode: host
+    mem_limit: 150m
+    mem_reservation: 80m
     environment:
       - LANG=C.utf8
       - LC_ALL=C.utf8
@@ -239,6 +247,8 @@ services:
     image: nexus-minimax:v1
     container_name: nexus-minimax
     network_mode: host
+    mem_limit: 100m
+    mem_reservation: 50m
     environment:
       - LANG=C.utf8
       - LC_ALL=C.utf8
@@ -302,6 +312,8 @@ services:
     image: nexus-codex:v1
     container_name: nexus-codex
     network_mode: host
+    mem_limit: 100m
+    mem_reservation: 50m
     environment:
       - LANG=C.utf8
       - LC_ALL=C.utf8
@@ -357,6 +369,25 @@ services:
       - ${TUNNELS_DIR:-./tunnels}/codex.json:/tunnel-creds.json:ro
     restart: unless-stopped
 
+  # -------------------------------------------------------------------
+  # Nexus Guardian — Monitor de RAM y limpieza automática
+  # -------------------------------------------------------------------
+  guardian:
+    image: nexus-guardian:v1
+    container_name: nexus-guardian
+    mem_limit: 50m
+    mem_reservation: 25m
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - guardian-logs:/var/log
+    restart: unless-stopped
+    depends_on:
+      - deepseek
+      - gemini
+      - antigravity
+      - minimax
+      - codex
+
 # =============================================================================
 # Volumes
 # =============================================================================
@@ -367,3 +398,4 @@ volumes:
   antigravity-config:
   minimax-config:
   codex-config:
+  guardian-logs:

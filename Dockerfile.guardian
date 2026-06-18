@@ -1,0 +1,12 @@
+FROM alpine:3.19
+
+RUN apk add --no-cache docker-cli bash procps
+
+COPY guardian.sh /guardian.sh
+RUN chmod +x /guardian.sh
+
+# Montar el socket de Docker para monitorear contenedores
+VOLUME /var/run/docker.sock
+
+ENTRYPOINT ["/bin/bash", "-c"]
+CMD ["while true; do /guardian.sh; sleep 60; done"]
