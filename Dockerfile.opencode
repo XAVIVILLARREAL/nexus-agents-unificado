@@ -1,7 +1,12 @@
 FROM node:20-alpine
 
-RUN npm install -g opencode-ai@latest ttyd
+RUN npm install -g opencode-ai@latest
 
-RUN wget -qO /usr/local/bin/cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 && chmod +x /usr/local/bin/cloudflared
+# Install ttyd from GitHub releases (npm ttyd is just a wrapper module)
+RUN wget -qO /tmp/ttyd https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.x86_64 && \
+    chmod +x /tmp/ttyd && mv /tmp/ttyd /usr/local/bin/ttyd
+
+RUN wget -qO /usr/local/bin/cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 && \
+    chmod +x /usr/local/bin/cloudflared
 
 EXPOSE 7686
