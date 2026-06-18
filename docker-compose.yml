@@ -401,6 +401,41 @@ services:
       - minimax
       - codex
 
+  # -------------------------------------------------------------------
+  # Commit Tracker DB — PostgreSQL lite
+  # -------------------------------------------------------------------
+  commits-db:
+    image: postgres:15-alpine
+    container_name: commits-db
+    environment:
+      POSTGRES_DB: commits
+      POSTGRES_USER: commits
+      POSTGRES_PASSWORD: commits_secret
+    volumes:
+      - commits-data:/var/lib/postgresql/data
+    mem_limit: 50m
+    mem_reservation: 25m
+    restart: unless-stopped
+
+  # -------------------------------------------------------------------
+  # Commit Tracker API — GitHub commits cache
+  # -------------------------------------------------------------------
+  commit-tracker:
+    image: nexus-commit-tracker:v1
+    container_name: commit-tracker
+    network_mode: host
+    depends_on:
+      - commits-db
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - DB_HOST=localhost
+      - DB_NAME=commits
+      - DB_USER=commits
+      - DB_PASS=commits_secret
+    mem_limit: 50m
+    mem_reservation: 25m
+    restart: unless-stopped
+
 # =============================================================================
 # Volumes
 # =============================================================================
@@ -412,3 +447,4 @@ volumes:
   minimax-config:
   codex-config:
   guardian-logs:
+  commits-data:

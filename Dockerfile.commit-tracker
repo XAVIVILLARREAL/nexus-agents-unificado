@@ -1,0 +1,7 @@
+FROM python:3.12-alpine
+
+RUN pip install psycopg2-binary requests
+COPY commit_tracker.py /commit_tracker.py
+
+EXPOSE 7691
+CMD ["python3", "/commit_tracker.py"]
