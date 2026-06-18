@@ -78,7 +78,7 @@ services:
         # Tmux session con deepseek
         tmux has-session -t deepseek 2>/dev/null || tmux new-session -d -s deepseek deepseek
 
-        exec ttyd --writable \
+        exec ttyd --writable --index /ttyd-mobile.html \
           -t "fontFamily=Menlo,Monaco,Droid Sans Mono,Roboto Mono,Noto Sans Mono,monospace" \
           -t "theme={\"background\":\"#000000\",\"foreground\":\"#00FF00\",\"cursor\":\"#00FF00\",\"selectionBackground\":\"#003300\",\"black\":\"#000000\",\"red\":\"#00AA00\",\"green\":\"#00FF00\",\"yellow\":\"#00DD00\",\"blue\":\"#00CC00\",\"magenta\":\"#00BB00\",\"cyan\":\"#00EE00\",\"white\":\"#00FF44\",\"brightBlack\":\"#004400\",\"brightRed\":\"#00FF00\",\"brightGreen\":\"#00FF33\",\"brightYellow\":\"#00FF00\",\"brightBlue\":\"#00FF22\",\"brightMagenta\":\"#00FF11\",\"brightCyan\":\"#00FF44\",\"brightWhite\":\"#00FF55\"}" \
           --port 7681 tmux -u attach-session -t deepseek
@@ -159,7 +159,7 @@ services:
         cloudflared tunnel --config /root/.cloudflared/config.yml run > /tmp/cf.log 2>&1 &
 
         # Iniciar gemini CLI via ttyd
-        exec ttyd --writable \
+        exec ttyd --writable --index /ttyd-mobile.html \
           -t fontSize=22 \
           -t "fontFamily=Liberation Mono, Consolas, monospace" \
           -t cursorBlink=true \
@@ -225,7 +225,7 @@ services:
 
         cloudflared tunnel --config /root/.cloudflared/config.yml run > /tmp/cf.log 2>&1 &
 
-        exec ttyd --writable \
+        exec ttyd --writable --index /ttyd-mobile.html \
           -t fontSize=22 \
           -t "fontFamily=Liberation Mono, Consolas, monospace" \
           -t cursorBlink=true \
@@ -290,7 +290,7 @@ services:
 
         cloudflared tunnel --config /root/.cloudflared/config.yml run > /tmp/cf.log 2>&1 &
 
-        exec ttyd --writable \
+        exec ttyd --writable --index /ttyd-mobile.html \
           -t fontSize=22 \
           -t "fontFamily=Liberation Mono, Consolas, monospace" \
           -t cursorBlink=true \
@@ -355,7 +355,7 @@ services:
 
         cloudflared tunnel --config /root/.cloudflared/config.yml run > /tmp/cf.log 2>&1 &
 
-        exec ttyd --writable \
+        exec ttyd --writable --index /ttyd-mobile.html \
           -t fontSize=22 \
           -t "fontFamily=Liberation Mono, Consolas, monospace" \
           -t cursorBlink=true \
